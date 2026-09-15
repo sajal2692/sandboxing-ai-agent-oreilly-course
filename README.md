@@ -4,7 +4,11 @@ Companion repository for the O'Reilly live course **Sandboxing an AI Agent: Buil
 
 The course covers how to limit what an agent's running code can access and affect, choose an isolation mechanism, and integrate and operate sandboxes in an agent application.
 
-**Status:** This repository currently contains only this README. Demo code and instructions for setup, execution, and cleanup will be added as the demos are developed.
+**Status:** Demo 1 is implemented as one sales workflow in two scripts. Both versions
+passed the sales and access checks on macOS on 2026-09-14. Demo 2 is still planned.
+
+Start with [Demo 1: Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)
+for setup, the comparison walkthrough, and expected results.
 
 ## What You Will Learn
 
@@ -34,21 +38,24 @@ The course covers how to limit what an agent's running code can access and affec
 - Monitoring, cleanup, resource limits, concurrency, and cost
 - **Demo: Integrating an Agent with a Managed Sandbox**
 
-## Planned Demos
+## Demos
 
 | Demo | Focus | Status |
 | --- | --- | --- |
-| **Sandboxing with an Agent Harness** | Run an agent's execution tool with configured access limits, complete a small task, and check that an unrelated file cannot be read. | Coming soon |
+| **[Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)** | Compare one sales workflow with and without sandbox protection for home-directory and mounted-volume files. | Implemented and tested on macOS |
 | **Integrating an Agent with a Managed Sandbox** | Connect an agent's tools to a hosted execution environment, provide task inputs, retrieve results, and clean up. | Coming soon |
 
-The demos will include setup instructions, example inputs, expected results, and cleanup steps. Framework, provider, and version requirements will be documented with the code.
+Demo 1 includes two self-contained Python scripts, synthetic inputs, setup
+instructions, expected results, and optional checks under `tests/`. Framework, provider, and version requirements are documented with
+each demo.
 
 ## Prerequisites
 
 - Familiarity with AI agents and tool calling
 - Basic Python and command-line experience
 
-The live course uses instructor-led demos. You can follow the concepts without provisioning a sandbox during class. Requirements for reproducing the demos will be added with their setup instructions.
+The live course uses instructor-led demos. You can follow the concepts without
+provisioning a sandbox during class. See each demo's README for reproduction requirements.
 
 ## Resources
 

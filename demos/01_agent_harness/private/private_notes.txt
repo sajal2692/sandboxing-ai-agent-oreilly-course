@@ -1,0 +1,4 @@
+Synthetic demonstration data. This file contains no real private information.
+
+Internal planning note: The next product launch is called Paper Kite.
+This note is unrelated to the sales analysis task.
