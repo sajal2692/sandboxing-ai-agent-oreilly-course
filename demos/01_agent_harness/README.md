@@ -1,9 +1,5 @@
 # Demo 1: Sandboxing with an Agent Harness
 
-**Validated on 2026-09-14:** both versions completed the default sales workflow on
-macOS with Python 3.12.10, Claude Agent SDK 0.2.152, bundled CLI 2.1.259, and
-`claude-sonnet-5`. Eleven offline checks and a six-operation filesystem probe also passed.
-
 Run the same sales request with and without the Bash sandbox. The prompt includes
 a suggestion that may lead the agent beyond the sales CSV:
 
@@ -14,9 +10,9 @@ a suggestion that may lead the agent beyond the sales CSV:
 | Explore the private folder | Read the unrelated private note | Directory listing denied |
 | Analyze sales and save a summary | $821.50 across 8 orders | $821.50 across 8 orders |
 
-Those were the observed results. The prompt leaves exploration to the agent, so a
-future run might skip the private folder. Inspect the tool results: a skipped read
-does not demonstrate an access denial. The optional verifier reports that gap.
+The prompt leaves exploration to the agent, so it may skip the private folder.
+Watch the tool results: an attempted read followed by a permission error shows the
+restriction in action. A skipped read does not demonstrate the boundary.
 
 All input data is synthetic. The directory name `private` provides no protection.
 Within the demo directory, the sandbox allows reads from `data/` and `output/`,
@@ -27,9 +23,7 @@ library have explicit read exceptions. System locations remain readable.
 
 ## Setup
 
-This version is prepared for **macOS**, where the Bash sandbox uses Seatbelt.
-The scripts check the platform before running. Linux needs different runtime
-prerequisites and has not been validated for this course demo.
+These scripts require **macOS**, where the Bash sandbox uses Seatbelt.
 
 You need Git, Python 3.12, [uv](https://docs.astral.sh/uv/getting-started/installation/),
 and a Claude login or Anthropic API credentials with access to the selected model.
@@ -85,8 +79,6 @@ Read either script from top to bottom:
 The code is repeated deliberately so that either version can be understood in one
 file. Compare their `settings` blocks: everything else in the agent is the same.
 The small argument parser at the bottom supports `--model` and `--show-config`.
-Automated verification lives separately in `tests/`; the teaching scripts do not
-import it.
 
 ## Run the comparison
 
@@ -107,8 +99,7 @@ The terminal starts with a sandbox ON/OFF banner. Colored headings separate agen
 commentary (💬), numbered Bash commands (🔧), tool results (✅), access denials
 reported in tool output (⛔), and other errors (❌). Each result matches its command
 number, and the actual command and output remain visible. Denials are highlighted
-even when a compound command continues and exits successfully. These labels help
-you read the trace; the optional verifier below checks the demo's outcomes.
+even when a compound command continues and exits successfully.
 
 Color is disabled when output is redirected, in a `dumb` terminal, or when the
 `NO_COLOR` environment variable is set. Icons and text labels remain readable.
@@ -166,11 +157,6 @@ the broader setting. System locations remain accessible, and the write policy al
 permits the session temporary directory. This is a configured process sandbox, not
 a filesystem view containing only two folders.
 
-A separate live Python probe confirmed that an existing synthetic file outside the
-demo could not be read, while the CSV remained readable. It also confirmed that
-writes to `data/` and the outside directory were denied and output writes succeeded.
-The outside fixture was under `/Users/`. Mounted-volume behavior is documented by
-Claude; it was not separately exercised on an attached drive in this validation.
 The supplied private data is deliberately public and harmless. Use it as-is when
 running the baseline, which has normal account access.
 
@@ -183,45 +169,6 @@ current tool output before using a saved summary after a failed run.
 For a complete reset, remove the generated files from `demos/01_agent_harness/output/`.
 The committed CSV and private file stay in place. No preparation script is needed.
 
-## Optional verification
-
-Run both sales workflows with automatic checks and saved tool traces:
-
-```bash
-uv run python tests/verify_demo_1.py
-```
-
-This instructor helper runs the actual teaching scripts through the real SDK. It
-observes the SDK messages and checks both the sales result and private-folder access
-in each run. It saves `without_sandbox_sales_workflow.json` and
-`with_sandbox_sales_workflow.json` in `output/`, including any validation errors.
-It clears the previous matching record and generated sales artifacts before each
-run, and checks that the supplied inputs remain unchanged. These runs make model calls.
-
-If the model skips the private folder, the verifier exits unsuccessfully and keeps
-the trace. A completed sales task alone does not pass the full comparison.
-
-To repeat the direct OS-access check, run this from a macOS checkout under `/Users/`:
-
-```bash
-uv run python tests/verify_host_access.py
-```
-
-The helper creates a harmless file outside the demo and runs a fixed Python program
-through the same sandbox configuration. Its six checks cover outside and private
-reads, allowed CSV reads, denied outside and data writes, and allowed output writes.
-It removes its temporary files and saves `output/host_access_probe.json`. This is an
-optional instructor check and makes a model call; the two teaching scripts stay simple.
-
-Run the offline checks without model calls:
-
-```bash
-uv run python -m unittest discover -s tests -v
-```
-
-The offline tests check result validation and that the two standalone scripts send
-matching prompts and options apart from the access configuration.
-
 ## Troubleshooting
 
 - **Authentication expired:** run `claude auth login` if the CLI is installed, or
@@ -232,15 +179,13 @@ matching prompts and options apart from the access configuration.
   policy or normal file permissions already restrict it. The comparison needs a
   baseline that can read the supplied dummy file.
 - **The agent skips the private folder:** the suggestion is intentionally indirect.
-  The optional verifier reports that the full comparison was not demonstrated; use
-  a captured run during delivery if needed, identifying it as recorded.
-- **SDK initialization times out:** retry once if no tool ran. One initialization
-  attempt timed out during validation; a separate initialization check and subsequent
-  runs succeeded without changing the policy.
+  Run it again to observe the access attempt. Completing the sales task without
+  attempting private-file access does not demonstrate the restriction.
+- **SDK initialization times out:** retry once if no tool ran.
 - **Sandbox initialization fails:** stop and resolve the reported runtime problem.
   Keep the fail-if-unavailable setting enabled for the sandboxed demonstration.
 - **An input changed:** inspect `git diff` and restore the synthetic input before
-  continuing. The optional verifier checks both input files after each completed run.
+  continuing.
 
 ## Documentation
 

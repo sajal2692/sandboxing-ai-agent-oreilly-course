@@ -4,9 +4,6 @@ Companion repository for the O'Reilly live course **Sandboxing an AI Agent: Buil
 
 The course covers how to limit what an agent's running code can access and affect, choose an isolation mechanism, and integrate and operate sandboxes in an agent application.
 
-**Status:** Demo 1 is implemented as one sales workflow in two scripts. Both versions
-passed the sales and access checks on macOS on 2026-09-14. Demo 2 is still planned.
-
 Start with [Demo 1: Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)
 for setup, the comparison walkthrough, and expected results.
 
@@ -40,14 +37,13 @@ for setup, the comparison walkthrough, and expected results.
 
 ## Demos
 
-| Demo | Focus | Status |
-| --- | --- | --- |
-| **[Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)** | Compare one sales workflow with and without sandbox protection for home-directory and mounted-volume files. | Implemented and tested on macOS |
-| **Integrating an Agent with a Managed Sandbox** | Connect an agent's tools to a hosted execution environment, provide task inputs, retrieve results, and clean up. | Coming soon |
+| Demo | Focus |
+| --- | --- |
+| **[Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)** | Run the same sales task with and without sandboxing, and compare which files the agent can access. |
+| **Integrating an Agent with a Managed Sandbox** (code coming soon) | Connect an agent's tools to a hosted execution environment, provide task inputs, retrieve results, and clean up. |
 
 Demo 1 includes two self-contained Python scripts, synthetic inputs, setup
-instructions, expected results, and optional checks under `tests/`. Framework, provider, and version requirements are documented with
-each demo.
+instructions, and expected results. See its README for requirements and a walkthrough.
 
 ## Prerequisites
 
