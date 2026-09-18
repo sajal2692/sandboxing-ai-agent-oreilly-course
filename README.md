@@ -40,10 +40,14 @@ for setup, the comparison walkthrough, and expected results.
 | Demo | Focus |
 | --- | --- |
 | **[Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)** | Run the same sales task with and without sandboxing, and compare which files the agent can access. |
-| **Integrating an Agent with a Managed Sandbox** (code coming soon) | Connect an agent's tools to a hosted execution environment, provide task inputs, retrieve results, and clean up. |
+| **[Integrating an Agent with a Managed Sandbox](demos/02_managed_sandboxes/README.md)** | Compare a local agent with remote tools and an agent running inside Daytona, using the Claude Agent SDK or Deep Agents. Upload input, execute generated code, retrieve results, and clean up. |
 
 Demo 1 includes two self-contained Python scripts, synthetic inputs, setup
 instructions, and expected results. See its README for requirements and a walkthrough.
+Demo 2 includes two architectures using the same document-analysis task: a local
+Deep Agents application with tools in Daytona, and a launcher that runs either a
+Claude Agent SDK or a Deep Agents application inside Daytona. Both demos have their
+own setup instructions.
 
 ## Prerequisites
 

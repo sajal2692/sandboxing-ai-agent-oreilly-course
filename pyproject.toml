@@ -8,5 +8,19 @@ dependencies = [
     "claude-agent-sdk==0.2.152",
 ]
 
+[dependency-groups]
+demo2 = [
+    "daytona==0.214.0",
+    "deepagents==0.7.15",
+    "langchain-daytona==0.0.8",
+    "langchain-anthropic==1.7.2",
+    "python-dotenv==1.2.3",
+]
+# Installed inside the Demo 2b sandbox image when --agent deepagents is selected.
+demo2-remote = [
+    "deepagents==0.7.15",
+    "langchain-anthropic==1.7.2",
+]
+
 [tool.uv]
 package = false

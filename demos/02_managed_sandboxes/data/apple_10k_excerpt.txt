@@ -1,0 +1,15 @@
+Apple Inc. 2025 Form 10-K: net sales by category
+
+Source: https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm
+Section: Products and Services Performance, printed page 23 (PDF page 26).
+Units: millions of US dollars. Fiscal years ended September 27, 2025 and
+September 28, 2024. This teaching excerpt reformats the reported figures;
+it omits the 2023 column, rounded growth rates, and narrative commentary.
+
+Category,2025,2024
+iPhone,209586,201183
+Mac,33708,29984
+iPad,28023,26694
+Wearables Home and Accessories,35686,37005
+Services,109158,96169
+Total net sales,416161,391035

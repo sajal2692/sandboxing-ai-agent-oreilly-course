@@ -1,0 +1,28 @@
+Analyze /home/daytona/workspace/apple_10k_excerpt.txt.
+Compare Apple's fiscal 2025 and 2024 revenue using only this supplied excerpt.
+
+Work in /home/daytona/workspace. Read the input, write analysis.py using Python's
+standard library, then run it with a separate execution tool call:
+python /home/daytona/workspace/analysis.py
+The program must read the excerpt and calculate the results. Do not just write
+the answers yourself. Do not install packages, browse the web, or delegate work.
+
+Have the program save metrics.json with exactly these fields:
+- revenue_2024_millions: total 2024 net sales, an integer
+- revenue_2025_millions: total 2025 net sales, an integer
+- increase_millions: the difference, an integer
+- growth_percent: the percentage increase, rounded to two decimal places
+- largest_increase_category: the category with the largest absolute increase
+- largest_increase_millions: that category's increase, an integer
+Print this JSON when the program runs.
+
+Also save report.md, at most 250 words, with these three headings:
+## Revenue comparison
+Give total revenue, the absolute change in millions of dollars, and growth percent.
+## Largest increase
+Name the category with the largest absolute increase and its contribution in
+millions of dollars. Exclude the total row when comparing categories.
+## Source
+Cite the filing URL and page number from the input.
+
+Leave the input unchanged. Finish with a short summary after running the program.
