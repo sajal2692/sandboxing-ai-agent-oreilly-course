@@ -1,66 +1,84 @@
 # Sandboxing an AI Agent
 
-Companion repository for the O'Reilly live course **Sandboxing an AI Agent: Build an Isolated Execution Layer for Your AI Agents**, taught by Sajal Sharma.
+Companion repository for the O'Reilly live course **Sandboxing an AI Agent: Build an
+Isolated Execution Layer for Your AI Agents**, taught by Sajal Sharma.
 
-The course covers how to limit what an agent's running code can access and affect, choose an isolation mechanism, and integrate and operate sandboxes in an agent application.
+The course has two instructor-led demos. You can follow both in class without
+provisioning anything. This repository lets you read the code during the session
+and reproduce the runs afterwards.
 
-Start with [Demo 1: Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)
-for setup, the comparison walkthrough, and expected results.
+## Repository map
 
-## What You Will Learn
+```text
+demos/01_agent_harness/      Demo 1: one agent, run with and without the Bash sandbox
+demos/02_managed_sandboxes/  Demo 2: agent loop outside, then inside, a Daytona sandbox
+tests/                       Offline checks and optional live verifiers for both demos
+pyproject.toml               Pinned dependencies: Demo 1 in the base set,
+                             Demo 2 in the demo2 and demo2-remote groups
+.env.example                 Template for the two API keys Demo 2 needs
+```
 
-- Explain why an agent needs a separate execution boundary.
-- Compare process restrictions, containers, and microVMs, including what remains shared in each approach.
-- Choose a sandboxing approach based on the workload and what you need to protect.
-- Integrate a sandbox into an agent application.
-- Manage permissions, lifecycle, monitoring, resource use, and cleanup.
+Each demo directory has its own README with the full walkthrough, expected
+output, limits, and troubleshooting. Generated `output/` folders are ignored by Git.
 
-## Course Modules
+## The demos
 
-### Module 1: Why Agents Need a Sandbox
+| | Demo 1: Sandboxing with an Agent Harness | Demo 2: Integrating an Agent with a Managed Sandbox |
+| --- | --- | --- |
+| Question | What changes when the harness enforces a boundary around the agent's commands? | Where does the agent loop run relative to the sandbox, and what crosses the boundary? |
+| Setup | Claude Agent SDK on macOS; the Bash tool runs under the OS sandbox | Daytona sandboxes created and deleted per run |
+| Task | Analyze a sales CSV. The prompt hints at a private folder nearby. | Compare two years of revenue from a 10-K excerpt by writing and running Python |
+| What to watch | Without the sandbox the agent can read the private note; with it, the read is denied and the task still completes | Input uploaded, code executed remotely, three files downloaded, sandbox deleted |
+| Files to open | `without_sandbox.py`, `with_sandbox.py` | `local_agent_remote_tools.py`, `launch_remote_agent.py`, `remote_agent_claude.py`, `remote_agent_deepagents.py` |
 
-- Agent runs and the risks of access beyond the task's requirements
-- How an agent uses a computer: programs, processes, the kernel, and shared resources
-- Process restrictions, containers, and microVMs
-- Comparing isolation mechanisms for different workloads
-- **Demo: Sandboxing with an Agent Harness**
+Demo 1 commands, from the repository root:
 
-### Module 2: Operating a Sandbox
+```bash
+uv run python demos/01_agent_harness/without_sandbox.py
+uv run python demos/01_agent_harness/with_sandbox.py
+```
 
-- Sandboxing through an agent harness, self-managed environments, and hosted services
-- Tool approvals and sandbox restrictions
-- Running the agent loop outside or inside the sandbox
-- Preparing, reusing, and managing the sandbox throughout its lifecycle
-- Per-run identity, network access, and moving code and results across the boundary
-- Monitoring, cleanup, resource limits, concurrency, and cost
-- **Demo: Integrating an Agent with a Managed Sandbox**
+Demo 2 commands. The first runs the agent on your computer with its tools in
+Daytona. The other two run the whole agent inside Daytona, with either framework:
 
-## Demos
+```bash
+uv run --locked --group demo2 python demos/02_managed_sandboxes/local_agent_remote_tools.py
+uv run --locked --group demo2 python demos/02_managed_sandboxes/launch_remote_agent.py --agent claude
+uv run --locked --group demo2 python demos/02_managed_sandboxes/launch_remote_agent.py --agent deepagents
+```
 
-| Demo | Focus |
-| --- | --- |
-| **[Sandboxing with an Agent Harness](demos/01_agent_harness/README.md)** | Run the same sales task with and without sandboxing, and compare which files the agent can access. |
-| **[Integrating an Agent with a Managed Sandbox](demos/02_managed_sandboxes/README.md)** | Compare a local agent with remote tools and an agent running inside Daytona, using the Claude Agent SDK or Deep Agents. Upload input, execute generated code, retrieve results, and clean up. |
+See [Demo 1](demos/01_agent_harness/README.md) and
+[Demo 2](demos/02_managed_sandboxes/README.md) for what each run should print.
 
-Demo 1 includes two self-contained Python scripts, synthetic inputs, setup
-instructions, and expected results. See its README for requirements and a walkthrough.
-Demo 2 includes two architectures using the same document-analysis task: a local
-Deep Agents application with tools in Daytona, and a launcher that runs either a
-Claude Agent SDK or a Deep Agents application inside Daytona. Both demos have their
-own setup instructions.
+## Before you start
 
-## Prerequisites
+| Requirement | Demo 1 | Demo 2 |
+| --- | --- | --- |
+| Operating system | macOS (the Bash sandbox uses Seatbelt) | macOS, Linux, or Windows |
+| Python 3.12 and [uv](https://docs.astral.sh/uv/getting-started/installation/) | Yes | Yes |
+| Claude access | Claude login or `ANTHROPIC_API_KEY` | `ANTHROPIC_API_KEY` only |
+| [Daytona](https://www.daytona.io/docs/en/authentication/) API key | No | Yes; `manage:secrets` permission for the inside-sandbox runs |
+| Cost | Subscription usage or API credits | Anthropic and Daytona are both billed per run |
 
-- Familiarity with AI agents and tool calling
-- Basic Python and command-line experience
+Install:
 
-The live course uses instructor-led demos. You can follow the concepts without
-provisioning a sandbox during class. See each demo's README for reproduction requirements.
+```bash
+git clone git@github.com:sajal2692/sandboxing-ai-agent-oreilly-course.git
+cd sandboxing-ai-agent-oreilly-course
+uv sync --locked
+```
 
-## Resources
+Add the Demo 2 dependencies only if you plan to run it:
 
-- [Claude Code sandboxing](https://code.claude.com/docs/en/sandboxing): file and network restrictions for the Bash tool
-- [Deep Agents sandboxes](https://docs.langchain.com/oss/python/deepagents/sandboxes): connecting agent tools to sandbox backends
-- [Docker Engine security](https://docs.docker.com/engine/security/): container isolation and security considerations
-- [Firecracker](https://github.com/firecracker-microvm/firecracker): microVM architecture and documentation
-- [Daytona documentation](https://www.daytona.io/docs/en/): hosted sandbox creation, execution, and lifecycle management
+```bash
+uv sync --locked --group demo2
+cp .env.example .env
+```
+
+Then put your Daytona and Anthropic keys in `.env`. It is ignored by Git. Never
+paste credentials into the Python files.
+
+Demo 1 uses your existing Claude Code login if you have one; its README shows how
+to sign in with the bundled executable otherwise. Model access is pinned to
+`claude-sonnet-5` in every script; Demo 1 accepts `--model` if your account uses
+a different one.
