@@ -93,9 +93,7 @@ Do not retry the denied access through another tool, copy, path, or unsandboxed 
     OUTPUT_DIR.mkdir(exist_ok=True)
 
     # 3. Run the agent and print its words, commands, and actual tool results.
-    sandbox_enabled = json.loads(options.settings)["sandbox"]["enabled"]
-    log("🔒 Mode: sandbox ON" if sandbox_enabled else "🔓 Mode: sandbox OFF",
-        PROMPT.splitlines()[0], "blue" if sandbox_enabled else "yellow")
+    log("🔒 Mode: sandbox ON", PROMPT.splitlines()[0], "blue")
     log("⏳ Starting agent", f"Model: {model}")
     command_numbers = {}
     final = None
