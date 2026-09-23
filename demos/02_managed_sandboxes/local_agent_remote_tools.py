@@ -92,7 +92,6 @@ async def main():
                             if isinstance(message, AIMessage):
                                 if message.text:
                                     log("💬 Agent", message.text)
-                                # The model chooses each tool call here; the tool runs in the sandbox.
                                 for call in message.tool_calls:
                                     log(f"🔧 Tool: {call['name']}", "\n".join(
                                         f"{key}:\n{value}" for key, value in call["args"].items()

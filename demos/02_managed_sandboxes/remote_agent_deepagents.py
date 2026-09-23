@@ -16,6 +16,10 @@ MODEL = "claude-sonnet-5"
 
 
 def log(heading, body=""):
+    """Everything this file prints runs in the sandbox: magenta, unless the launcher sets NO_COLOR."""
+    heading = f"[sandbox] {heading}"
+    if "NO_COLOR" not in os.environ:
+        heading = f"\033[1;35m{heading}\033[0m"
     print(f"\n{heading}", flush=True)
     if body:
         print(body, flush=True)
@@ -23,8 +27,6 @@ def log(heading, body=""):
 
 async def main():
     # 1. Configure the agent. Its tools operate on this sandbox's filesystem and shell.
-    # LocalShellBackend gives the agent an unrestricted shell on the machine it runs on.
-    # Deep Agents warns against that on a computer you care about. Here, "local" is the sandbox.
     backend = LocalShellBackend(
         root_dir=WORKSPACE,
         virtual_mode=False,

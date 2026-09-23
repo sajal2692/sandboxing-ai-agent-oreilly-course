@@ -1,6 +1,7 @@
 """Demo 2b: this entire agent application runs inside the Daytona sandbox."""
 
 import asyncio
+import os
 from pathlib import Path
 
 from claude_agent_sdk import (
@@ -12,6 +13,10 @@ WORKSPACE = Path("/home/daytona/workspace")
 
 
 def log(heading, body=""):
+    """Everything this file prints runs in the sandbox: magenta, unless the launcher sets NO_COLOR."""
+    heading = f"[sandbox] {heading}"
+    if "NO_COLOR" not in os.environ:
+        heading = f"\033[1;35m{heading}\033[0m"
     print(f"\n{heading}", flush=True)
     if body:
         print(body, flush=True)
