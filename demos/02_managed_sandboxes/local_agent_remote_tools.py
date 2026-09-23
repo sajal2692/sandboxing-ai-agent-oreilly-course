@@ -19,10 +19,11 @@ WORKSPACE = "/home/daytona/workspace"
 MODEL = "claude-sonnet-5"
 
 
-def log(heading, body="", color="cyan"):
-    colors = {"cyan": 36, "blue": 34, "green": 32, "yellow": 33}
+def log(heading, body="", where="local"):
+    """Label each step by where it runs: cyan on this computer, magenta in the sandbox."""
+    heading = f"[{where}] {heading}"
     if sys.stdout.isatty() and "NO_COLOR" not in os.environ:
-        heading = f"\033[1;{colors[color]}m{heading}\033[0m"
+        heading = f"\033[1;{35 if where == 'sandbox' else 36}m{heading}\033[0m"
     print(f"\n{heading}", flush=True)
     if body:
         print(body, flush=True)
@@ -54,7 +55,7 @@ async def main():
         output = DEMO_DIR / "output" / f"2a-{sandbox.id}"
         output.mkdir(parents=True)
         (output / "sandbox_id.txt").write_text(sandbox.id)
-        log("✅ Sandbox ready", sandbox.id, "green")
+        log("✅ Sandbox ready", sandbox.id)
 
         # 2. Copy only the task input across the boundary.
         sandbox.fs.upload_file(
@@ -76,7 +77,7 @@ async def main():
             system_prompt="You are a financial analyst. Your file and execution tools run in a remote sandbox.",
             middleware=[ModelCallLimitMiddleware(run_limit=8, exit_behavior="error")],
         )
-        log("⏳ Running local agent", f"Model: {MODEL}", "blue")
+        log("⏳ Running local agent", f"Model: {MODEL}")
         executed = False
         async with asyncio.timeout(240):
             with (output / "events.jsonl").open("w") as trace:
@@ -90,15 +91,16 @@ async def main():
                             trace.flush()
                             if isinstance(message, AIMessage):
                                 if message.text:
-                                    log("💬 Agent", message.text, "blue")
+                                    log("💬 Agent", message.text)
+                                # The model chooses each tool call here; the tool runs in the sandbox.
                                 for call in message.tool_calls:
                                     log(f"🔧 Tool: {call['name']}", "\n".join(
                                         f"{key}:\n{value}" for key, value in call["args"].items()
-                                    ))
+                                    ), "sandbox")
                                 if message.response_metadata.get("stop_reason") == "max_tokens":
                                     raise RuntimeError("The model reached its output token limit.")
                             elif isinstance(message, ToolMessage):
-                                log(f"↩️ Result: {message.name}", message.content)
+                                log(f"↩️ Result: {message.name}", message.content, "sandbox")
                                 executed |= message.name == "execute" and "exit code 0" in str(message.content)
         if not executed:
             raise RuntimeError("No successful execution tool result was observed.")
@@ -112,13 +114,13 @@ async def main():
             content = sandbox.fs.download_file(remote_path, 30)
             content.decode("utf-8")
             (output / name).write_bytes(content)
-        log("📥 Report downloaded", (output / "report.md").read_text(), "green")
+        log("📥 Report downloaded", (output / "report.md").read_text())
         log("📁 Saved files", str(output))
     finally:
         # 5. The outside application owns cleanup, including on errors or Ctrl+C.
         log("🧹 Deleting sandbox", sandbox.id)
         daytona.delete(sandbox, timeout=60, wait=True)
-        log("✅ Sandbox deleted", color="green")
+        log("✅ Sandbox deleted")
 
 
 if __name__ == "__main__":
